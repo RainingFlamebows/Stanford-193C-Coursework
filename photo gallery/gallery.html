@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Stanford Gallery</title>
+		<style type="text/css">
+		body {
+			text-align: center;
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			padding: 0;
+			margin: 0;
+			overflow: hidden;
+		}
+
+		#photoSection {
+			display: inline-block;
+			vertical-align: bottom;
+			position: relative;
+		}
+
+		#photo {
+			width: 100%;
+			height: 100%;
+			padding: 0;
+			margin: 0;
+		}
+		#caption {
+			color: white;
+			font-size: 14pt;
+			font-family: sans-serif;
+			background-color: #008800;
+			opacity: 0.5;
+
+			width: 100%;
+			padding: 10px 0;
+
+			position: absolute;
+			bottom: 0;
+			left: 0;
+		}
+
+		#forwardOverlay, #backwardOverlay {
+			opacity: 0.5;
+			position: absolute;
+			bottom: 0;
+			width: 50%;
+			height: 100%;
+		}
+		#forwardOverlay {
+			right: 0;
+		}
+
+		#backwardOverlay {
+			left: 0;
+		}
+		</style>
+	</head>
+	<body onload="resizePic()">
+		<div id="photoSection">
+			<img id='photo' src='memchu.jpg' alt='photo' data-index="0"/>
+			<div id="caption">
+				Stanford Memorial Church - the church used to have an 80' bell tower, which fell in the 1906 earthquake.
+			</div>
+			<div id="forwardOverlay" onclick="changePic('forward')"></div>
+			<div id="backwardOverlay" onclick="changePic('backward')"></div>
+		</div>
+		<script>
+		"use strict";
+		
+		function resizePic() {
+			console.log('resizePic called');
+			var width = window.innerWidth;
+			var height = window.innerHeight;
+			var pic = document.getElementById('photo');
+			var wrapper = document.getElementById('photoSection');
+			// pic.style.width = (width * .60).toString() + "px";
+			// pic.style.height = "auto";
+			// wrapper.style.height = (height * .7) + "px";
+			// wrapper.style.width = "auto";
+
+			var wrapperStyle = window.getComputedStyle(wrapper);
+
+			// wrapper.style.marginTop = (height - parseInt(window.getComputedStyle(wrapper).height))/2;
+			wrapper.style.top = (parseInt(window.innerHeight) - parseInt(wrapperStyle.height))/2 + "px";
+			wrapper.style.bottom = (parseInt(window.innerHeight) - parseInt(wrapperStyle.height))/2 + "px";
+		}
+
+		var photoArray = [
+				{filename: "memchu.jpg",
+				 caption: "Stanford Memorial Church - the church used to have an 80' bell tower, which fell in the 1906 earthquake."},
+				{filename: "quad.jpg",
+				 caption: "The Stanford Quad"},
+				{filename: "hoop.jpg",
+				 caption: "The <i>Red Hoop Fountain</i> with Green Library in the background."},
+				{filename: "memorial-court.jpg",
+				 caption: "Memorial Court (in the front of the Quad) with Rodin's <i>Burghers of Calais</i> statues."},
+				{filename: "gates.jpg",
+				 caption: "The Gates Building - home of Stanford Computer Science."},
+				{filename: "stone-river.jpg",
+				 caption: "The Stone River statue near the Cantor Arts Center (Stanford's own art museum)."},
+			];
+
+		function changePic(direction) {
+			// alert('fucntion fcalled');
+			var picture = document.getElementById('photo');
+			var caption = document.getElementById('caption');
+			var index = parseInt(picture.getAttribute('data-index'));
+
+			if(direction === "forward") {
+				index += 1;
+				if(index >= photoArray.length) {index %= photoArray.length;}
+			}
+			else if(direction === "backward") {
+				index -= 1;
+				if(index < 0) {index = photoArray.length + index;}
+			}
+			picture.src = photoArray[index].filename;
+			caption.innerHTML = photoArray[index].caption;
+			picture.setAttribute('data-index', index);
+		}
+		resizePic();
+		window.addEventListener('resize', resizePic, false);
+		</script>
+	</body>
+</html>
