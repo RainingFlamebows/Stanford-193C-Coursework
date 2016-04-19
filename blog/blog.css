@@ -1,0 +1,112 @@
+body {
+  background: rgb(251,251,249);
+}
+
+h1 {
+  text-shadow: -1px -1px 1px #777777;
+  color: white;
+  background: rgb(136, 23, 26);
+  padding: 10px;
+  margin: 50px;
+  margin-left: 100px;
+  border-radius: 3px;
+}
+
+#seal {
+  position: absolute;
+  width: 100px;
+  top: 25px;
+  margin: 5px;
+  margin-left: 0px;
+  padding-left: 0px;
+}
+.rightSide, .leftSide {
+	float: left;
+	width: 30%;
+  /* controls the distance of entries from timeline */
+	padding: 0 60px;
+}
+
+.leftSide {
+  /* vertical timeline line */
+  border-right: 4px dotted rgb(136, 23, 26);
+}
+
+.leftSide > div, .rightSide > div {
+	/* controls vertical distance between entries*/
+  margin: 200px 0;
+}
+
+.entry {
+  font-family: Times;
+  border-radius: 3px;
+  padding: 5px 10px;
+  background: #d5d0c0;
+  box-shadow: 3px 3px 5px #777777;
+}
+
+/* bullet points located on timeline */
+.entrycontents::before {
+  content: "";
+	position: absolute;
+	border: 4px solid white;
+	border-radius: 10px;
+  -moz-box-shadow: 3px 3px 5px #777777, inset 0 0 2px #777777;
+  -webkit-box-shadow: 3px 3px 5px #777777, inset 0 0 2px #777777;
+  box-shadow: 3px 3px 5px #777777, inset 0 0 2px #777777;
+	width: 10px;
+	height: 10px;
+	background: rgb(136, 23, 26);
+	left: calc(30% + 115px);
+}
+
+.entrycontents:hover::before {
+	-webkit-transform: scale(1.3);
+	-o-transform: scale(1.3);
+	-moz-transform: scale(1.3);
+	transform: scale(1.3);
+	transition: all .5s;
+}
+
+.entry > .entryheading > .entrydate {
+	font-size: 20px;
+	position: relative;
+	top: 40px;
+}
+
+.leftSide > .entry > .entryheading > .entrydate {
+	left: calc(100% + 90px);
+}
+
+.rightSide > .entry > .entryheading > .entrydate {
+	right: 130px;
+}
+
+#entry1 {
+	/* staggers the entries so that they are evenly spaced */
+	margin-top: 0px;
+}
+
+.entryheading {
+  border-bottom: 2px solid rgb(136, 23, 26);
+}
+
+.entrytitle {
+  margin-bottom: 0px;
+  padding: 0px;
+  color: rgb(136, 23, 26);
+}
+
+.entryfooter {
+  padding: 3px;
+  border-top: 1px solid rgb(136, 23, 26);
+}
+
+.entrytags {
+  color: rgb(136, 23, 26);
+  font-style: italic
+}
+
+.entrydate {
+  font-style: italic;
+}

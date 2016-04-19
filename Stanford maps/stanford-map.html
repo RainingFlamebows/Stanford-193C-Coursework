@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Stanford Map</title>
+		<style type="text/css">
+			body {
+				vertical-align: top;
+				-webkit-user-select: none;
+				-moz-user-select: none;
+				user-select: none;
+				overflow: hidden;
+				cursor: default;
+			}
+
+			#frame {
+				display: inline-block;
+				border: 10px solid grey;
+				width: 95%;
+				height: 95%;
+				overflow: hidden;
+				position: absolute;
+			}
+
+			#frame:active {
+				cursor: move;
+			}
+
+			#pic {
+				height: auto;
+				position: relative;
+				left: 0px;
+				top: 0px;
+			}
+
+			.mapPic {
+				left: 0px;
+				top: 0px;
+			}
+
+			#controls {
+				display: inline-block;
+				position: absolute;
+				left: 90%;
+				vertical-align: top;
+			}
+
+			button {
+				font-size: 20px;
+				border-radius: 10px;
+				background: white;
+				border: 1px solid black;
+			}
+
+			button:active {
+				background: lightgrey;
+			}
+
+			#zoom {
+				position: relative;
+				left: -17px;
+				top: 80px;
+			}
+
+			#direction {
+				position: relative;
+				width: 100px;
+				top: 100px;
+			}
+
+			#up {
+				display: block;
+			}
+
+			#left, #right {
+				position: relative;
+				left: -23px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="frame">
+			<img id="pic" class="mapPic" src="map-s.gif" alt="small map" draggable="false" ondragstart="return false;" style="width: 1200px; top: 0px; left: 0px;"/>
+			<img class="mapPic" src="map-m.gif" alt="medium map" draggable="false" ondragstart="return false;" style="display: none; width: 2000px; top: 0px; left: 0px;"/>
+			<img class="mapPic" src="map-l.gif" alt="large map" draggable="false" ondragstart="return false;" style="display: none; width: 3000px; top: 0px; left: 0px;"/>
+			<img class="mapPic" src="map-xl.gif" alt="xlarge map" draggable="false" ondragstart="return false;" style="display: none; width: 4000px; top: 0px; left: 0px;"/>
+		</div>
+		<div id="controls">
+			<div id="zoom">
+				<!-- if time, use slider: http://www.w3schools.com/jsref/prop_range_step.asp -->
+				<button id="zoomOut" onclick="zoom(-1)">-</button>
+				<button id="zoomIn" onclick="zoom(1)">+</button>
+			</div>
+
+			<div id="direction">
+				<button id="up" onclick="pan('up')">&uarr;</button>
+				<button id="left" onclick="pan('left')">&larr;</button>
+				<button id="right" onclick="pan('right')">&rarr;</button>
+				<button id="down" onclick="pan('down')">&darr;</button>
+			</div>
+		</div>
+	
+		<script>
+			var frame = document.getElementById('frame');
+			var picture = document.getElementById('pic');
+
+			var startX, startY;
+			var picLeft = 0, picTop = 0;
+			var drag = false;
+
+			function startDrag(e) {
+				if(e.target === picture) {
+					drag = true;
+					startX = e.clientX;
+					startY = e.clientY;
+
+					picLeft = parseInt(picture.style.left);
+					picTop = parseInt(picture.style.top);
+
+					document.addEventListener("mousemove", dragMap, false);
+					picture.style.transition = "";
+				}
+			}
+			function dragMap(e) {
+				if(e.target === picture && drag === true) {
+					picture.style.left = picLeft + e.clientX - startX + "px";
+					picture.style.top = picTop + e.clientY  - startY + "px";
+				}
+			}
+			function endDrag(e) {
+				drag = false;
+			}
+
+			function panToCenter(e, transition) {
+				if(e.target === picture) {
+					picture.style.transition = ".5s";
+					var clickX = e.clientX;
+					var clickY = e.clientY;
+
+					picture.style.left = picLeft + parseInt(frame.clientWidth)/2 - 
+						clickX + "px";
+					picture.style.top = picTop + parseInt(frame.clientHeight)/2 - 
+						clickY + "px";
+				}
+				// prevents dragging after double clicking
+				drag = false;
+			}
+
+			function pan(direction) {
+				picture.style.transition = ".5s";
+
+				if(direction === 'up') 		  {
+					picture.style.top = 
+						parseInt(picture.style.top) + frame.clientHeight/2 + "px";
+				}
+				else if(direction === 'down') {
+					picture.style.top = 
+						parseInt(picture.style.top) - frame.clientHeight/2 + "px";
+				}
+				else if(direction === 'left') {
+					picture.style.left = 
+						parseInt(picture.style.left) + frame.clientWidth/2 + "px";
+				}
+				else if(direction === 'right'){
+					picture.style.left = 
+						parseInt(picture.style.left) - frame.clientWidth/2 + "px";
+				}
+			}
+
+			var zoomLevel = 0; // 0 = small -> 3 = large
+			function zoom(direction) {
+				var maps = document.getElementsByClassName('mapPic');
+				zoomLevel += direction;
+				if(zoomLevel >= 0 && zoomLevel < maps.length) {
+					var oldMap = document.getElementById('pic');
+					var newMap = maps[zoomLevel];
+					var oldMapStyle = window.getComputedStyle(oldMap);
+					var newMapStyle = window.getComputedStyle(newMap);
+
+					var oldMapWidth = oldMapStyle.width;
+					var oldMapHeight = oldMapStyle.height;
+
+					oldMap.id = "";
+					newMap.id = "pic";
+					newMap.style.display = "";
+					
+					oldCoords = {
+						x: parseInt(frame.clientWidth)/2 - parseInt(oldMap.style.left),
+						y: parseInt(frame.clientHeight)/2 - parseInt(oldMap.style.top)
+					};
+
+					newCoords = {
+						x: parseInt(frame.clientWidth)/2 - oldCoords.x * parseInt(newMapStyle.width) / parseInt(oldMapWidth),
+						y: parseInt(frame.clientHeight)/2 - oldCoords.y * parseInt(newMapStyle.height) / parseInt(oldMapHeight)
+					};
+					picture = newMap;
+
+					newMap.style.left = newCoords.x + "px";
+					newMap.style.top = newCoords.y + "px";
+
+					oldMap.style.display = "none";
+				}
+				else {
+					// undo adding of direction and do nothing
+					zoomLevel -= direction;
+				}
+			}
+
+			document.addEventListener("dblclick",panToCenter,false);
+			document.addEventListener("mousedown", startDrag, false);
+			document.addEventListener("mouseup", endDrag, false);
+		</script>
+	</body>
+</html>
